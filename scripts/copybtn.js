@@ -31,6 +31,19 @@ function getIssueDataAndWriteToClipboard(issueId)
     const issueReporter = data['fields']['reporter'].displayName;
     const issueAssignee = data['fields']['assignee'] ? data['fields']['assignee'].displayName : 'Unassigned';
 
+    let prefix = '';
+    switch (issueType) {
+      case 'Bug':
+        prefix = '🐞 fix:'
+        break;
+      case 'Story':
+      case 'Sub-task':
+        prefix = '✨ feat:'
+        break;
+      default:
+        break;
+    }
+
     storageGet('format').then(function (storageData) {
       const format = storageData.format || '[{key}] {title}';
       const outputText = format
@@ -42,6 +55,7 @@ function getIssueDataAndWriteToClipboard(issueId)
         .replaceAll('{status}', issueStatus)
         .replaceAll('{reporter}', issueReporter)
         .replaceAll('{assignee}', issueAssignee)
+        .replaceAll('{prefix}', prefix)
       
         navigator.clipboard.writeText(outputText);
     });
